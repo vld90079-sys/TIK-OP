@@ -7,21 +7,21 @@
   <title>Balance / Get Coins</title>
   <style>
     :root{
-      --bg: #f4f6fa;
+      --bg: #f2f2f2;
       --card: #ffffff;
-      --text: #0f172a;
-      --muted: #6b7280;
-      --hairline: rgba(15, 23, 42, .08);
-      --shadow: 0 14px 36px rgba(15, 23, 42, .10);
-      --shadow-soft: 0 10px 22px rgba(15, 23, 42, .08);
-      --radius-xl: 22px;
-      --radius-lg: 18px;
+      --tile: #eeeeee;
+      --text: #111111;
+      --muted: rgba(17,17,17,.55);
+      --muted-2: rgba(17,17,17,.40);
+      --hairline: rgba(17, 17, 17, .06);
+      --shadow-soft: 0 10px 18px rgba(0,0,0,.06);
+      --radius-xl: 18px;
+      --radius-lg: 16px;
       --radius-md: 14px;
-      --accent: #0a84ff;
-      --accent-2: #6c5ce7;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --tap: rgba(10, 132, 255, .12);
+      --tt-red: #ff2b55;
+      --tt-red-2: #ff3b5f;
+      --tt-pink-bg: rgba(255, 43, 85, .08);
+      --tt-pink-border: rgba(255, 43, 85, .55);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -32,148 +32,176 @@
       margin: 0;
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(10,132,255,.12), transparent 55%),
-        radial-gradient(900px 520px at 100% 0%, rgba(108,92,231,.10), transparent 55%),
-        var(--bg);
+      background: var(--bg);
       display: grid;
       place-items: center;
-      padding: calc(18px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));
+      padding: 0;
     }
 
     .phone{
       width: min(420px, 100%);
-      border-radius: 34px;
-      background: rgba(255,255,255,.55);
-      border: 1px solid rgba(255,255,255,.5);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, .14);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      min-height: 100dvh;
+      background: #f6f6f6;
       overflow: hidden;
+      position: relative;
     }
 
     .app{
-      background: transparent;
-      padding: 14px;
+      padding: 0;
+      min-height: 100dvh;
+      position: relative;
+      background:
+        radial-gradient(420px 220px at 75% 0%, rgba(255, 70, 120, .22), transparent 55%),
+        radial-gradient(520px 260px at 15% 10%, rgba(85, 205, 255, .20), transparent 60%),
+        radial-gradient(520px 260px at 35% 0%, rgba(160, 130, 255, .14), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0) 280px),
+        #f6f6f6;
     }
 
     .screens{
       display: flex;
       width: 200%;
       transform: translateX(var(--x, 0%));
-      transition: transform 420ms cubic-bezier(.2,.9,.1,1);
+      transition: transform 360ms cubic-bezier(.2,.85,.2,1);
       will-change: transform;
     }
 
     .screen{
       width: 50%;
-      padding: 10px;
-      min-height: calc(100dvh - 44px - 28px);
+      padding: calc(12px + var(--safe-top)) 16px calc(18px + var(--safe-bottom));
+      min-height: 100dvh;
     }
 
-    .topbar{
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 6px 4px 12px;
-    }
-
-    .title{
+    .nav{
       display: grid;
-      gap: 6px;
-      line-height: 1.1;
+      grid-template-columns: 42px 1fr 42px;
+      align-items: center;
+      gap: 10px;
+      padding: 0 0 10px;
     }
-    .title h1{
+    .nav h1{
       margin: 0;
-      font-size: 28px;
-      letter-spacing: -0.02em;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      justify-self: center;
+      font-weight: 800;
     }
-    .sub{
+    .icon-btn{
+      width: 42px;
+      height: 42px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .icon-btn:active{ background: rgba(0,0,0,.05); }
+    .back{
+      justify-self: start;
+    }
+    .back .arrow{
+      width: 12px;
+      height: 12px;
+      border-left: 2px solid rgba(17,17,17,.85);
+      border-bottom: 2px solid rgba(17,17,17,.85);
+      transform: rotate(45deg);
+      margin-left: 6px;
+    }
+    .right{
+      justify-self: end;
+      opacity: .9;
+    }
+    .right svg{ width: 22px; height: 22px; }
+
+    .secure{
+      text-align: center;
+      margin-top: -6px;
+      margin-bottom: 14px;
+    }
+    .secure .sub{
       display: inline-flex;
       align-items: center;
       gap: 8px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 650;
       user-select: none;
     }
     .shield{
       width: 16px;
       height: 16px;
       border-radius: 6px;
-      background: linear-gradient(180deg, rgba(34,197,94,.16), rgba(34,197,94,.06));
+      background: transparent;
       display: grid;
       place-items: center;
-      border: 1px solid rgba(34,197,94,.25);
-      box-shadow: 0 8px 18px rgba(34,197,94,.12);
     }
     .shield svg{ width: 11px; height: 11px; }
 
     .card{
       background: var(--card);
-      border: 1px solid var(--hairline);
+      border: 1px solid rgba(0,0,0,.00);
       box-shadow: var(--shadow-soft);
       border-radius: var(--radius-xl);
       padding: 16px;
     }
     .card + .card{ margin-top: 12px; }
 
-    .balance-head{
-      display: flex;
+    .center{
+      text-align: center;
+    }
+
+    .est{
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 10px;
-      margin-bottom: 10px;
-    }
-    .meta{
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      min-width: 0;
-    }
-    .meta .label{
       color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
     }
-    .currency{
+    .est .usd{
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--hairline);
-      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
-      color: rgba(15,23,42,.72);
-      font-weight: 700;
-      font-size: 12px;
-      user-select: none;
-      flex: 0 0 auto;
+      color: rgba(17,17,17,.65);
+      font-weight: 750;
     }
     .caret{
       width: 0;
       height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
-      border-top: 6px solid rgba(15,23,42,.45);
-      margin-top: 1px;
+      border-top: 6px solid rgba(17,17,17,.45);
+      margin-top: 2px;
     }
 
     .big{
-      font-size: 40px;
-      font-weight: 780;
+      font-size: 46px;
+      font-weight: 900;
       letter-spacing: -0.03em;
-      margin: 8px 0 12px;
+      margin: 10px 0 12px;
       transform-origin: 50% 70%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
     .big small{
-      font-size: .48em;
-      font-weight: 750;
-      color: rgba(15,23,42,.55);
-      margin-left: 6px;
+      font-size: .44em;
+      font-weight: 800;
+      color: rgba(17,17,17,.55);
       letter-spacing: -0.02em;
+    }
+    .big .next{
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid rgba(17,17,17,.45);
+      border-top: 2px solid rgba(17,17,17,.45);
+      transform: rotate(45deg);
+      margin-top: 4px;
     }
     .pop{
       animation: pop 420ms cubic-bezier(.2,.9,.2,1);
@@ -184,79 +212,85 @@
       100%{ transform: scale(1); }
     }
 
-    .pillrow{
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
     .pill{
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
-      background: linear-gradient(180deg, rgba(10,132,255,.10), rgba(10,132,255,.04));
-      border: 1px solid rgba(10,132,255,.18);
-      color: rgba(15,23,42,.86);
-      font-weight: 750;
-      box-shadow: 0 14px 30px rgba(10,132,255,.10);
+      background: rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.55);
+      color: rgba(17,17,17,.80);
+      font-weight: 700;
+      box-shadow: 0 12px 26px rgba(0,0,0,.06);
       user-select: none;
     }
-    .coin-dot{
-      width: 20px;
-      height: 20px;
+    .pill .divider{
+      width: 1px;
+      height: 16px;
+      background: rgba(17,17,17,.14);
+    }
+    .tcoin{
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 38%),
-        linear-gradient(180deg, #ffe27a, #fbbf24);
-      border: 1px solid rgba(245,158,11,.40);
-      box-shadow: 0 12px 18px rgba(245,158,11,.20);
+      background: linear-gradient(180deg, #ffd76a, #f4b400);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 14px rgba(0,0,0,.08);
+      position: relative;
+      display: grid;
+      place-items: center;
     }
-    .pill .kv{
-      display: inline-flex;
-      gap: 6px;
-      align-items: baseline;
+    .tcoin:before{
+      content: "♪";
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(255,255,255,.95);
+      transform: translateY(-.5px);
     }
-    .pill .k{ font-size: 12px; color: rgba(15,23,42,.60); font-weight: 800; }
-    .pill .v{ font-size: 14px; font-weight: 860; letter-spacing: -0.01em; }
-
-    .link{
-      border: 0;
-      background: transparent;
-      color: var(--accent);
-      font-weight: 800;
-      font-size: 14px;
-      padding: 10px 10px;
-      border-radius: 12px;
+    .pill .label{
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      font-size: 14px;
+      font-weight: 650;
+      color: rgba(17,17,17,.60);
+    }
+    .pill .value{
+      font-weight: 900;
+      color: rgba(17,17,17,.92);
+      letter-spacing: -0.02em;
+      margin-left: 2px;
+    }
+    .pill .action{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(17,17,17,.70);
+      border: 0;
+      background: transparent;
+      padding: 0;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: transform 120ms ease, background 160ms ease;
     }
-    .link:active{
-      transform: translateY(1px);
-      background: rgba(10,132,255,.10);
-    }
-    .chev{
+    .pill .action:active{ opacity: .7; }
+    .pill .action .arr{
       width: 10px;
       height: 10px;
-      border-right: 2px solid currentColor;
-      border-top: 2px solid currentColor;
+      border-right: 2px solid rgba(17,17,17,.45);
+      border-top: 2px solid rgba(17,17,17,.45);
       transform: rotate(45deg);
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
-    .list{
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 10px;
+    .section-label{
+      margin: 14px 4px 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(17,17,17,.42);
+      letter-spacing: -0.01em;
     }
 
     .row{
@@ -264,7 +298,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 10px 4px 0;
+      padding: 2px 2px;
     }
     .row .h{
       font-size: 16px;
@@ -272,11 +306,23 @@
       letter-spacing: -0.01em;
     }
     .row .r{
-      color: rgba(15,23,42,.62);
+      color: rgba(17,17,17,.45);
       font-size: 13px;
-      font-weight: 750;
+      font-weight: 650;
       text-align: right;
       max-width: 62%;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .row .r .chev{
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid rgba(17,17,17,.35);
+      border-top: 2px solid rgba(17,17,17,.35);
+      transform: rotate(45deg);
+      margin-top: 1px;
+      flex: 0 0 auto;
     }
 
     .promo{
@@ -284,7 +330,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding-top: 6px;
+      padding-top: 2px;
     }
     .promo .t{
       display: grid;
@@ -296,247 +342,262 @@
       font-size: 16px;
     }
     .promo .t .desc{
-      color: rgba(15,23,42,.62);
-      font-weight: 650;
+      color: rgba(17,17,17,.55);
+      font-weight: 600;
       font-size: 13px;
     }
     .badge{
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, rgba(108,92,231,.18), rgba(108,92,231,.06));
-      border: 1px solid rgba(108,92,231,.18);
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.60), rgba(255,255,255,0) 45%),
+        linear-gradient(180deg, #ff647d, #ff2b55);
       display: grid;
       place-items: center;
-      box-shadow: 0 18px 30px rgba(108,92,231,.14);
+      box-shadow: 0 18px 30px rgba(255, 43, 85, .20);
       flex: 0 0 auto;
       user-select: none;
-      font-weight: 900;
-      color: rgba(108,92,231,.85);
-      letter-spacing: -0.02em;
+      position: relative;
+    }
+    .badge:before{
+      content:"";
+      width: 28px;
+      height: 28px;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 36%, 98% 36%, 68% 58%, 79% 94%, 50% 72%, 21% 94%, 32% 58%, 2% 36%, 39% 36%);
+      opacity: .92;
+    }
+    .join{
+      margin-top: 8px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--tt-red);
+      font-weight: 800;
+      font-size: 14px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .join:active{ opacity: .7; }
+    .join .arr{
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: rotate(45deg);
+      margin-top: 2px;
     }
 
     .services{
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      gap: 18px;
       margin-top: 10px;
     }
     .svc{
-      border-radius: 16px;
-      border: 1px solid var(--hairline);
-      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
-      padding: 12px 10px;
+      border-radius: 14px;
+      border: 0;
+      background: transparent;
+      padding: 6px 0;
       text-align: center;
       user-select: none;
       transition: transform 120ms ease;
+      position: relative;
     }
     .svc:active{ transform: scale(.98); }
     .svc .i{
-      width: 34px;
-      height: 34px;
-      border-radius: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       margin: 0 auto 8px;
       display: grid;
       place-items: center;
-      border: 1px solid rgba(10,132,255,.14);
-      background: linear-gradient(180deg, rgba(10,132,255,.12), rgba(10,132,255,.05));
-      color: rgba(10,132,255,.95);
-      font-weight: 900;
+      border: 0;
+      background: #fff;
+      box-shadow: 0 12px 20px rgba(0,0,0,.06);
     }
     .svc .n{
-      font-size: 12px;
-      color: rgba(15,23,42,.75);
-      font-weight: 780;
+      font-size: 13px;
+      color: rgba(17,17,17,.78);
+      font-weight: 650;
       letter-spacing: -0.01em;
     }
-
-    /* Screen 2 */
-    .nav{
-      display: grid;
-      grid-template-columns: 40px 1fr 40px;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 4px 12px;
-    }
-    .back{
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      border: 1px solid var(--hairline);
-      background: rgba(255,255,255,.85);
-      box-shadow: 0 12px 22px rgba(15,23,42,.08);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform 120ms ease, background 160ms ease;
-    }
-    .back:active{
-      transform: translateY(1px);
-      background: rgba(15,23,42,.03);
-    }
-    .arrow{
-      width: 12px;
-      height: 12px;
-      border-left: 2px solid rgba(15,23,42,.75);
-      border-bottom: 2px solid rgba(15,23,42,.75);
-      transform: rotate(45deg);
-      margin-left: 3px;
-    }
-    .nav h1{
-      margin: 0;
-      font-size: 20px;
-      letter-spacing: -0.02em;
-      justify-self: center;
+    .svc .dot{
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--tt-red);
+      top: 6px;
+      right: 22px;
+      box-shadow: 0 6px 10px rgba(255,43,85,.25);
     }
 
-    .coins-balance{
+    .help{
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
     }
-    .coins-balance .left{
+    .help .left{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: rgba(17,17,17,.88);
+      letter-spacing: -0.01em;
+    }
+    .q{
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid rgba(17,17,17,.75);
       display: grid;
-      gap: 6px;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .help .chev{
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid rgba(17,17,17,.35);
+      border-top: 2px solid rgba(17,17,17,.35);
+      transform: rotate(45deg);
+      margin-top: 1px;
+    }
+
+    .coins-balance{
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
     }
     .coins-balance .label{
-      color: rgba(15,23,42,.60);
+      color: rgba(17,17,17,.55);
       font-size: 13px;
-      font-weight: 760;
+      font-weight: 650;
     }
     .coins-balance .val{
       font-size: 34px;
       font-weight: 900;
       letter-spacing: -0.03em;
     }
-    .coin-stack{
-      width: 56px;
-      height: 56px;
-      border-radius: 20px;
-      border: 1px solid rgba(245,158,11,.28);
-      background: linear-gradient(180deg, rgba(255,226,122,.40), rgba(255,226,122,.12));
-      box-shadow: 0 18px 36px rgba(245,158,11,.18);
+    .coins-balance .stack{
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffd76a, #f4b400);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: 0 12px 18px rgba(0,0,0,.08);
       display: grid;
       place-items: center;
-      position: relative;
-      overflow: hidden;
+      flex: 0 0 auto;
     }
-    .coin-stack:before,
-    .coin-stack:after{
-      content:"";
-      position: absolute;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 40%),
-        linear-gradient(180deg, #ffe27a, #f59e0b);
-      border: 1px solid rgba(245,158,11,.36);
-      box-shadow: 0 10px 20px rgba(245,158,11,.12);
-      transform: translate(8px, 10px);
+    .coins-balance .stack:before{
+      content: "♪";
+      font-weight: 900;
+      color: rgba(255,255,255,.95);
+      transform: translateY(-1px);
     }
-    .coin-stack:after{
-      width: 38px;
-      height: 38px;
-      transform: translate(-8px, -6px);
-      opacity: .9;
+    .coins-balance .num{
+      display: grid;
+      gap: 2px;
     }
-    .coin-stack span{
-      position: relative;
-      z-index: 1;
-      font-weight: 950;
-      color: rgba(15,23,42,.70);
-      letter-spacing: -0.02em;
+    .coins-balance .num .v{
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
 
     .section-title{
       margin: 0 0 10px;
-      font-size: 14px;
-      color: rgba(15,23,42,.70);
-      font-weight: 850;
+      font-size: 15px;
+      color: rgba(17,17,17,.75);
+      font-weight: 800;
       letter-spacing: -0.01em;
       padding: 0 2px;
     }
 
     .grid{
       display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
+      grid-template-columns: repeat(3, minmax(0,1fr));
       gap: 10px;
     }
 
     .pkg{
-      border-radius: 18px;
-      border: 1px solid var(--hairline);
-      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0);
+      background: var(--tile);
       padding: 14px 12px;
-      text-align: left;
+      text-align: center;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: transform 120ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
-      box-shadow: 0 10px 18px rgba(15,23,42,.05);
+      transition: transform 120ms ease, border-color 160ms ease, background 160ms ease;
+      box-shadow: none;
       position: relative;
       overflow: hidden;
     }
     .pkg:active{ transform: scale(.985); }
     .pkg .coins{
-      font-weight: 920;
+      font-weight: 900;
       font-size: 18px;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
       gap: 8px;
+      justify-content: center;
     }
     .pkg .coins .dot{
       width: 16px;
       height: 16px;
       border-radius: 999px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 45%),
-        linear-gradient(180deg, #ffe27a, #f59e0b);
-      border: 1px solid rgba(245,158,11,.42);
+      background: linear-gradient(180deg, #ffd76a, #f4b400);
+      border: 1px solid rgba(0,0,0,.10);
+      position: relative;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 12px rgba(0,0,0,.08);
+    }
+    .pkg .coins .dot:before{
+      content: "♪";
+      font-size: 10px;
+      font-weight: 900;
+      color: rgba(255,255,255,.95);
+      transform: translateY(-.5px);
     }
     .pkg .price{
       margin-top: 6px;
-      color: rgba(15,23,42,.65);
-      font-weight: 780;
+      color: rgba(17,17,17,.45);
+      font-weight: 650;
       font-size: 13px;
     }
     .pkg[aria-pressed="true"]{
-      border-color: rgba(10,132,255,.42);
-      background: linear-gradient(180deg, rgba(10,132,255,.14), rgba(10,132,255,.06));
-      box-shadow: 0 16px 30px rgba(10,132,255,.16);
-    }
-    .pkg[aria-pressed="true"]::after{
-      content:"";
-      position: absolute;
-      inset: -40% -40% auto auto;
-      width: 120px;
-      height: 120px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(10,132,255,.22), transparent 62%);
-      transform: translate(18px, -18px);
-      pointer-events: none;
+      border-color: var(--tt-pink-border);
+      background: var(--tt-pink-bg);
     }
 
-    .bottom{
-      position: sticky;
-      bottom: calc(10px + var(--safe-bottom));
-      padding-top: 10px;
+    .recharge-card{
+      background: var(--card);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
       margin-top: 12px;
     }
     .cta{
       width: 100%;
       border: 0;
-      border-radius: 18px;
-      padding: 16px 16px;
+      border-radius: 10px;
+      padding: 15px 16px;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: -0.01em;
       color: white;
-      background: linear-gradient(180deg, #0a84ff, #2f7cf6);
-      box-shadow: 0 18px 34px rgba(10,132,255,.22);
+      background: var(--tt-red);
+      box-shadow: none;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       display: inline-flex;
@@ -586,7 +647,7 @@
     /* Motion preferences */
     @media (prefers-reduced-motion: reduce){
       .screens{ transition: none; }
-      .cta, .pkg, .svc, .link, .back{ transition: none; }
+      .cta, .pkg, .svc, .icon-btn{ transition: none; }
       .spinner{ animation: none; }
       .pop{ animation: none; }
     }
@@ -598,50 +659,50 @@
       <div id="screens" class="screens" style="--x: 0%;">
         <!-- Screen 1: Balance -->
         <section class="screen" aria-labelledby="balanceTitle">
-          <header class="topbar">
-            <div class="title">
-              <h1 id="balanceTitle">Balance</h1>
-              <div class="sub" aria-label="Secure">
-                <span class="shield" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2.8c3.2 2.3 6.2 2.8 8.4 3.1v7.1c0 5.4-4 9.2-8.4 10.9C7.6 22.2 3.6 18.4 3.6 13V5.9C5.8 5.6 8.8 5.1 12 2.8Z" stroke="rgba(34,197,94,.95)" stroke-width="1.7" />
-                    <path d="M8.3 12.4l2.2 2.3 5.2-5.3" stroke="rgba(34,197,94,.95)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-                Secure
-              </div>
-            </div>
+          <header class="nav">
+            <button class="icon-btn back" type="button" aria-label="Back">
+              <span class="arrow" aria-hidden="true"></span>
+            </button>
+            <h1 id="balanceTitle">Balance</h1>
+            <button class="icon-btn right" type="button" aria-label="Menu" disabled style="opacity:.0; pointer-events:none"></button>
           </header>
 
-          <div class="card">
-            <div class="balance-head">
-              <div class="meta">
-                <div class="label">Estimated balance</div>
-              </div>
-              <div class="currency" role="button" aria-label="Currency selector">
-                USD <span class="caret" aria-hidden="true"></span>
-              </div>
+          <div class="secure">
+            <div class="sub" aria-label="Secure">
+              <span class="shield" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2.8c3.2 2.3 6.2 2.8 8.4 3.1v7.1c0 5.4-4 9.2-8.4 10.9C7.6 22.2 3.6 18.4 3.6 13V5.9C5.8 5.6 8.8 5.1 12 2.8Z" stroke="rgba(19,191,98,.95)" stroke-width="1.7" />
+                  <path d="M8.3 12.4l2.2 2.3 5.2-5.3" stroke="rgba(19,191,98,.95)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              Secure
             </div>
+          </div>
 
+          <div class="center">
+            <div class="est">
+              Estimated balance
+              <span class="usd" role="button" aria-label="Currency selector">USD <span class="caret" aria-hidden="true"></span></span>
+            </div>
             <div id="usdBig" class="big" aria-live="polite">
-              <span id="usdValue">0.10</span><small>USD</small>
+              <span id="usdValue">0.00</span><span class="next" aria-hidden="true"></span>
             </div>
 
-            <div class="pillrow">
-              <div class="pill" aria-label="Coins">
-                <span class="coin-dot" aria-hidden="true"></span>
-                <span class="kv"><span class="k">Coins</span><span id="coinsPill" class="v">5</span></span>
+            <div style="display:flex; justify-content:center;">
+              <div class="pill" aria-label="Coins and Get Coins">
+                <span class="label"><span class="tcoin" aria-hidden="true"></span> Coins <span id="coinsPill" class="value">5</span></span>
+                <span class="divider" aria-hidden="true"></span>
+                <button id="goGetCoins" class="action" type="button">
+                  Get Coins <span class="arr" aria-hidden="true"></span>
+                </button>
               </div>
-              <button id="goGetCoins" class="link" type="button">
-                Get Coins <span class="chev" aria-hidden="true"></span>
-              </button>
             </div>
           </div>
 
           <div class="card">
             <div class="row">
               <div class="h">Transactions</div>
-              <div class="r">Purchase of Coins: 0.39 USD</div>
+              <div class="r">Purchase of Coins: USD0.39 <span class="chev" aria-hidden="true"></span></div>
             </div>
           </div>
 
@@ -650,41 +711,57 @@
               <div class="t">
                 <div class="main">Journey to find the legend!</div>
                 <div class="desc">Unlock rewards and special challenges.</div>
-                <button class="link" type="button" style="padding-left:0">
-                  Join now <span class="chev" aria-hidden="true"></span>
+                <button class="join" type="button">
+                  Join now <span class="arr" aria-hidden="true"></span>
                 </button>
               </div>
-              <div class="badge" aria-hidden="true">JP</div>
+              <div class="badge" aria-hidden="true"></div>
             </div>
           </div>
 
+          <div class="section-label">Services</div>
           <div class="card">
-            <div class="row" style="padding-top:0">
-              <div class="h">Services</div>
-              <div class="r" aria-hidden="true"></div>
-            </div>
             <div class="services" role="list">
               <div class="svc" role="listitem" tabindex="0">
-                <div class="i" aria-hidden="true">◉</div>
+                <div class="i" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path d="M7 8c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6.5 10h11l-1 11h-9l-1-11Z" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M10 14h4" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
                 <div class="n">LIVE rewards</div>
               </div>
               <div class="svc" role="listitem" tabindex="0">
-                <div class="i" aria-hidden="true">◎</div>
+                <div class="i" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path d="M7 19V9" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 19V5" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M17 19v-7" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
                 <div class="n">Monetisation</div>
               </div>
               <div class="svc" role="listitem" tabindex="0">
-                <div class="i" aria-hidden="true">◇</div>
+                <span class="dot" aria-hidden="true"></span>
+                <div class="i" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path d="M12 3l2.5 6 6.5.5-5 4.2 1.6 6.3L12 17l-5.6 3 1.6-6.3-5-4.2 6.5-.5L12 3Z" stroke="rgba(17,17,17,.85)" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                </div>
                 <div class="n">Campaigns</div>
               </div>
             </div>
           </div>
 
+          <div class="section-label">Settings</div>
           <div class="card">
-            <div class="row" style="padding-top:0">
-              <div class="h">Settings</div>
-              <button class="link" type="button">
-                Help &amp; feedback <span class="chev" aria-hidden="true"></span>
-              </button>
+            <div class="help" role="button" tabindex="0" aria-label="Help and feedback">
+              <div class="left">
+                <span class="q" aria-hidden="true">?</span>
+                Help &amp; feedback
+              </div>
+              <span class="chev" aria-hidden="true"></span>
             </div>
           </div>
         </section>
@@ -692,33 +769,43 @@
         <!-- Screen 2: Get Coins -->
         <section class="screen" aria-labelledby="getCoinsTitle">
           <header class="nav">
-            <button id="goBack" class="back" type="button" aria-label="Back">
+            <button id="goBack" class="icon-btn back" type="button" aria-label="Back">
               <span class="arrow" aria-hidden="true"></span>
             </button>
             <h1 id="getCoinsTitle">Get Coins</h1>
-            <div aria-hidden="true"></div>
+            <button class="icon-btn right" type="button" aria-label="History">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M16 3h-6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3Z" stroke="rgba(17,17,17,.78)" stroke-width="2"/>
+                <path d="M10 7h6" stroke="rgba(17,17,17,.78)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 11h6" stroke="rgba(17,17,17,.78)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 15h4" stroke="rgba(17,17,17,.78)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
           </header>
 
           <div class="card">
             <div class="coins-balance">
-              <div class="left">
+              <div class="num">
                 <div class="label">Coins Balance</div>
-                <div id="coinsCard" class="val" aria-live="polite">5</div>
+                <div class="v">
+                  <span class="stack" aria-hidden="true"></span>
+                  <span id="coinsCard" class="val" aria-live="polite">5</span>
+                </div>
               </div>
-              <div class="coin-stack" aria-hidden="true"><span>CO</span></div>
             </div>
           </div>
 
           <div style="height:12px"></div>
-          <h2 class="section-title">Recharge</h2>
-          <div id="packages" class="grid" role="group" aria-label="Recharge packages">
-            <!-- injected by JS -->
+          <div class="recharge-card">
+            <h2 class="section-title">Recharge</h2>
+            <div id="packages" class="grid" role="group" aria-label="Recharge packages">
+              <!-- injected by JS -->
+            </div>
           </div>
 
-          <div class="bottom">
-            <button id="rechargeBtn" class="cta" type="button">
-              Recharge
-            </button>
+          <div style="height:18px"></div>
+          <div style="position: sticky; bottom: calc(10px + var(--safe-bottom)); padding-bottom: calc(8px + var(--safe-bottom));">
+            <button id="rechargeBtn" class="cta" type="button">Recharge</button>
           </div>
         </section>
       </div>
@@ -732,7 +819,7 @@
       coins: 5,
       selectedPackageCoins: null,
       selectedPackagePrice: null,
-      rateUsdPerCoin: 0.02
+      usdBalance: 0.00
     };
 
     const ui = {
@@ -760,13 +847,14 @@
     ];
 
     function fmtUsd(x){
-      return Number(x).toFixed(2);
+      const s = Number(x).toFixed(2);
+      return s.replace('.', ',');
     }
 
     function render(){
       ui.coinsPill.textContent = String(state.coins);
       ui.coinsCard.textContent = String(state.coins);
-      ui.usdValue.textContent = fmtUsd(state.coins * state.rateUsdPerCoin);
+      ui.usdValue.textContent = Number(state.usdBalance).toFixed(2);
     }
 
     function setScreen(name){
@@ -849,8 +937,8 @@
     function setRechargeLoading(loading){
       ui.rechargeBtn.disabled = !!loading;
       ui.rechargeBtn.innerHTML = loading
-        ? `<span class="spinner" aria-hidden="true"></span> Processing…`
-        : `Recharge`;
+        ? '<span class="spinner" aria-hidden="true"></span> Processing…'
+        : 'Recharge';
     }
 
     async function recharge(){
@@ -862,12 +950,15 @@
       const oldCoins = state.coins;
       const addCoins = state.selectedPackageCoins;
       const newCoins = oldCoins + addCoins;
+      const oldUsd = state.usdBalance;
+      const newUsd = Number((oldUsd + Number(state.selectedPackagePrice || 0)).toFixed(2));
 
       setRechargeLoading(true);
       const delay = 900 + Math.round(Math.random() * 250);
       await new Promise(r => setTimeout(r, delay));
 
       state.coins = newCoins;
+      state.usdBalance = newUsd;
       setRechargeLoading(false);
 
       // Go back, then animate numbers on Balance
@@ -877,13 +968,15 @@
       setTimeout(() => {
         pop(ui.usdBig);
         countUp({
-          from: oldCoins,
-          to: newCoins,
+          from: 0,
+          to: 1,
           durationMs: 760,
-          onUpdate: (v) => {
-            ui.coinsPill.textContent = String(Math.round(v));
-            ui.coinsCard.textContent = String(Math.round(v));
-            ui.usdValue.textContent = fmtUsd(v * state.rateUsdPerCoin);
+          onUpdate: (p) => {
+            const c = oldCoins + (newCoins - oldCoins) * p;
+            const u = oldUsd + (newUsd - oldUsd) * p;
+            ui.coinsPill.textContent = String(Math.round(c));
+            ui.coinsCard.textContent = String(Math.round(c));
+            ui.usdValue.textContent = Number(u).toFixed(2);
           },
           onDone: () => render()
         });
