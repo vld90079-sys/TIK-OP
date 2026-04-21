@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <title>Balance / Get Coins</title>
+  <style>
+    :root{
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --hairline: rgba(15, 23, 42, .08);
+      --shadow: 0 14px 36px rgba(15, 23, 42, .10);
+      --shadow-soft: 0 10px 22px rgba(15, 23, 42, .08);
+      --radius-xl: 22px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --accent: #0a84ff;
+      --accent-2: #6c5ce7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --tap: rgba(10, 132, 255, .12);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(10,132,255,.12), transparent 55%),
+        radial-gradient(900px 520px at 100% 0%, rgba(108,92,231,.10), transparent 55%),
+        var(--bg);
+      display: grid;
+      place-items: center;
+      padding: calc(18px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));
+    }
+
+    .phone{
+      width: min(420px, 100%);
+      border-radius: 34px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.5);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, .14);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .app{
+      background: transparent;
+      padding: 14px;
+    }
+
+    .screens{
+      display: flex;
+      width: 200%;
+      transform: translateX(var(--x, 0%));
+      transition: transform 420ms cubic-bezier(.2,.9,.1,1);
+      will-change: transform;
+    }
+
+    .screen{
+      width: 50%;
+      padding: 10px;
+      min-height: calc(100dvh - 44px - 28px);
+    }
+
+    .topbar{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 4px 12px;
+    }
+
+    .title{
+      display: grid;
+      gap: 6px;
+      line-height: 1.1;
+    }
+    .title h1{
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+    }
+    .sub{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      user-select: none;
+    }
+    .shield{
+      width: 16px;
+      height: 16px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(34,197,94,.16), rgba(34,197,94,.06));
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(34,197,94,.25);
+      box-shadow: 0 8px 18px rgba(34,197,94,.12);
+    }
+    .shield svg{ width: 11px; height: 11px; }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--hairline);
+      box-shadow: var(--shadow-soft);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+    }
+    .card + .card{ margin-top: 12px; }
+
+    .balance-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .meta{
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-width: 0;
+    }
+    .meta .label{
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .currency{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
+      color: rgba(15,23,42,.72);
+      font-weight: 700;
+      font-size: 12px;
+      user-select: none;
+      flex: 0 0 auto;
+    }
+    .caret{
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(15,23,42,.45);
+      margin-top: 1px;
+    }
+
+    .big{
+      font-size: 40px;
+      font-weight: 780;
+      letter-spacing: -0.03em;
+      margin: 8px 0 12px;
+      transform-origin: 50% 70%;
+    }
+    .big small{
+      font-size: .48em;
+      font-weight: 750;
+      color: rgba(15,23,42,.55);
+      margin-left: 6px;
+      letter-spacing: -0.02em;
+    }
+    .pop{
+      animation: pop 420ms cubic-bezier(.2,.9,.2,1);
+    }
+    @keyframes pop{
+      0%{ transform: scale(1); }
+      45%{ transform: scale(1.06); }
+      100%{ transform: scale(1); }
+    }
+
+    .pillrow{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(10,132,255,.10), rgba(10,132,255,.04));
+      border: 1px solid rgba(10,132,255,.18);
+      color: rgba(15,23,42,.86);
+      font-weight: 750;
+      box-shadow: 0 14px 30px rgba(10,132,255,.10);
+      user-select: none;
+    }
+    .coin-dot{
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 38%),
+        linear-gradient(180deg, #ffe27a, #fbbf24);
+      border: 1px solid rgba(245,158,11,.40);
+      box-shadow: 0 12px 18px rgba(245,158,11,.20);
+    }
+    .pill .kv{
+      display: inline-flex;
+      gap: 6px;
+      align-items: baseline;
+    }
+    .pill .k{ font-size: 12px; color: rgba(15,23,42,.60); font-weight: 800; }
+    .pill .v{ font-size: 14px; font-weight: 860; letter-spacing: -0.01em; }
+
+    .link{
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 14px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 120ms ease, background 160ms ease;
+    }
+    .link:active{
+      transform: translateY(1px);
+      background: rgba(10,132,255,.10);
+    }
+    .chev{
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: rotate(45deg);
+      margin-top: 1px;
+    }
+
+    .list{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 4px 0;
+    }
+    .row .h{
+      font-size: 16px;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+    }
+    .row .r{
+      color: rgba(15,23,42,.62);
+      font-size: 13px;
+      font-weight: 750;
+      text-align: right;
+      max-width: 62%;
+    }
+
+    .promo{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 6px;
+    }
+    .promo .t{
+      display: grid;
+      gap: 6px;
+    }
+    .promo .t .main{
+      font-weight: 880;
+      letter-spacing: -0.015em;
+      font-size: 16px;
+    }
+    .promo .t .desc{
+      color: rgba(15,23,42,.62);
+      font-weight: 650;
+      font-size: 13px;
+    }
+    .badge{
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(108,92,231,.18), rgba(108,92,231,.06));
+      border: 1px solid rgba(108,92,231,.18);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 18px 30px rgba(108,92,231,.14);
+      flex: 0 0 auto;
+      user-select: none;
+      font-weight: 900;
+      color: rgba(108,92,231,.85);
+      letter-spacing: -0.02em;
+    }
+
+    .services{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .svc{
+      border-radius: 16px;
+      border: 1px solid var(--hairline);
+      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
+      padding: 12px 10px;
+      text-align: center;
+      user-select: none;
+      transition: transform 120ms ease;
+    }
+    .svc:active{ transform: scale(.98); }
+    .svc .i{
+      width: 34px;
+      height: 34px;
+      border-radius: 14px;
+      margin: 0 auto 8px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(10,132,255,.14);
+      background: linear-gradient(180deg, rgba(10,132,255,.12), rgba(10,132,255,.05));
+      color: rgba(10,132,255,.95);
+      font-weight: 900;
+    }
+    .svc .n{
+      font-size: 12px;
+      color: rgba(15,23,42,.75);
+      font-weight: 780;
+      letter-spacing: -0.01em;
+    }
+
+    /* Screen 2 */
+    .nav{
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 4px 12px;
+    }
+    .back{
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 12px 22px rgba(15,23,42,.08);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 120ms ease, background 160ms ease;
+    }
+    .back:active{
+      transform: translateY(1px);
+      background: rgba(15,23,42,.03);
+    }
+    .arrow{
+      width: 12px;
+      height: 12px;
+      border-left: 2px solid rgba(15,23,42,.75);
+      border-bottom: 2px solid rgba(15,23,42,.75);
+      transform: rotate(45deg);
+      margin-left: 3px;
+    }
+    .nav h1{
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      justify-self: center;
+    }
+
+    .coins-balance{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .coins-balance .left{
+      display: grid;
+      gap: 6px;
+    }
+    .coins-balance .label{
+      color: rgba(15,23,42,.60);
+      font-size: 13px;
+      font-weight: 760;
+    }
+    .coins-balance .val{
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+    .coin-stack{
+      width: 56px;
+      height: 56px;
+      border-radius: 20px;
+      border: 1px solid rgba(245,158,11,.28);
+      background: linear-gradient(180deg, rgba(255,226,122,.40), rgba(255,226,122,.12));
+      box-shadow: 0 18px 36px rgba(245,158,11,.18);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .coin-stack:before,
+    .coin-stack:after{
+      content:"";
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 40%),
+        linear-gradient(180deg, #ffe27a, #f59e0b);
+      border: 1px solid rgba(245,158,11,.36);
+      box-shadow: 0 10px 20px rgba(245,158,11,.12);
+      transform: translate(8px, 10px);
+    }
+    .coin-stack:after{
+      width: 38px;
+      height: 38px;
+      transform: translate(-8px, -6px);
+      opacity: .9;
+    }
+    .coin-stack span{
+      position: relative;
+      z-index: 1;
+      font-weight: 950;
+      color: rgba(15,23,42,.70);
+      letter-spacing: -0.02em;
+    }
+
+    .section-title{
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: rgba(15,23,42,.70);
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      padding: 0 2px;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .pkg{
+      border-radius: 18px;
+      border: 1px solid var(--hairline);
+      background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.00));
+      padding: 14px 12px;
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 120ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      box-shadow: 0 10px 18px rgba(15,23,42,.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .pkg:active{ transform: scale(.985); }
+    .pkg .coins{
+      font-weight: 920;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pkg .coins .dot{
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 45%),
+        linear-gradient(180deg, #ffe27a, #f59e0b);
+      border: 1px solid rgba(245,158,11,.42);
+    }
+    .pkg .price{
+      margin-top: 6px;
+      color: rgba(15,23,42,.65);
+      font-weight: 780;
+      font-size: 13px;
+    }
+    .pkg[aria-pressed="true"]{
+      border-color: rgba(10,132,255,.42);
+      background: linear-gradient(180deg, rgba(10,132,255,.14), rgba(10,132,255,.06));
+      box-shadow: 0 16px 30px rgba(10,132,255,.16);
+    }
+    .pkg[aria-pressed="true"]::after{
+      content:"";
+      position: absolute;
+      inset: -40% -40% auto auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(10,132,255,.22), transparent 62%);
+      transform: translate(18px, -18px);
+      pointer-events: none;
+    }
+
+    .bottom{
+      position: sticky;
+      bottom: calc(10px + var(--safe-bottom));
+      padding-top: 10px;
+      margin-top: 12px;
+    }
+    .cta{
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 16px 16px;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      color: white;
+      background: linear-gradient(180deg, #0a84ff, #2f7cf6);
+      box-shadow: 0 18px 34px rgba(10,132,255,.22);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 120ms ease, filter 160ms ease;
+    }
+    .cta:active{ transform: translateY(1px); filter: brightness(.98); }
+    .cta[disabled]{ cursor: not-allowed; filter: grayscale(.08) brightness(.98); opacity: .92; }
+    .spinner{
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.42);
+      border-top-color: rgba(255,255,255,.95);
+      animation: spin 750ms linear infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + var(--safe-bottom));
+      transform: translateX(-50%) translateY(18px);
+      background: rgba(15,23,42,.92);
+      color: rgba(255,255,255,.95);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 750;
+      font-size: 13px;
+      letter-spacing: -0.01em;
+      box-shadow: 0 18px 42px rgba(15,23,42,.30);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      max-width: min(420px, calc(100vw - 24px));
+      width: fit-content;
+      text-align: center;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Motion preferences */
+    @media (prefers-reduced-motion: reduce){
+      .screens{ transition: none; }
+      .cta, .pkg, .svc, .link, .back{ transition: none; }
+      .spinner{ animation: none; }
+      .pop{ animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" role="application" aria-label="Wallet UI">
+    <div class="app">
+      <div id="screens" class="screens" style="--x: 0%;">
+        <!-- Screen 1: Balance -->
+        <section class="screen" aria-labelledby="balanceTitle">
+          <header class="topbar">
+            <div class="title">
+              <h1 id="balanceTitle">Balance</h1>
+              <div class="sub" aria-label="Secure">
+                <span class="shield" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2.8c3.2 2.3 6.2 2.8 8.4 3.1v7.1c0 5.4-4 9.2-8.4 10.9C7.6 22.2 3.6 18.4 3.6 13V5.9C5.8 5.6 8.8 5.1 12 2.8Z" stroke="rgba(34,197,94,.95)" stroke-width="1.7" />
+                    <path d="M8.3 12.4l2.2 2.3 5.2-5.3" stroke="rgba(34,197,94,.95)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Secure
+              </div>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="balance-head">
+              <div class="meta">
+                <div class="label">Estimated balance</div>
+              </div>
+              <div class="currency" role="button" aria-label="Currency selector">
+                USD <span class="caret" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div id="usdBig" class="big" aria-live="polite">
+              <span id="usdValue">0.10</span><small>USD</small>
+            </div>
+
+            <div class="pillrow">
+              <div class="pill" aria-label="Coins">
+                <span class="coin-dot" aria-hidden="true"></span>
+                <span class="kv"><span class="k">Coins</span><span id="coinsPill" class="v">5</span></span>
+              </div>
+              <button id="goGetCoins" class="link" type="button">
+                Get Coins <span class="chev" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div class="h">Transactions</div>
+              <div class="r">Purchase of Coins: 0.39 USD</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="promo">
+              <div class="t">
+                <div class="main">Journey to find the legend!</div>
+                <div class="desc">Unlock rewards and special challenges.</div>
+                <button class="link" type="button" style="padding-left:0">
+                  Join now <span class="chev" aria-hidden="true"></span>
+                </button>
+              </div>
+              <div class="badge" aria-hidden="true">JP</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row" style="padding-top:0">
+              <div class="h">Services</div>
+              <div class="r" aria-hidden="true"></div>
+            </div>
+            <div class="services" role="list">
+              <div class="svc" role="listitem" tabindex="0">
+                <div class="i" aria-hidden="true">◉</div>
+                <div class="n">LIVE rewards</div>
+              </div>
+              <div class="svc" role="listitem" tabindex="0">
+                <div class="i" aria-hidden="true">◎</div>
+                <div class="n">Monetisation</div>
+              </div>
+              <div class="svc" role="listitem" tabindex="0">
+                <div class="i" aria-hidden="true">◇</div>
+                <div class="n">Campaigns</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row" style="padding-top:0">
+              <div class="h">Settings</div>
+              <button class="link" type="button">
+                Help &amp; feedback <span class="chev" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Screen 2: Get Coins -->
+        <section class="screen" aria-labelledby="getCoinsTitle">
+          <header class="nav">
+            <button id="goBack" class="back" type="button" aria-label="Back">
+              <span class="arrow" aria-hidden="true"></span>
+            </button>
+            <h1 id="getCoinsTitle">Get Coins</h1>
+            <div aria-hidden="true"></div>
+          </header>
+
+          <div class="card">
+            <div class="coins-balance">
+              <div class="left">
+                <div class="label">Coins Balance</div>
+                <div id="coinsCard" class="val" aria-live="polite">5</div>
+              </div>
+              <div class="coin-stack" aria-hidden="true"><span>CO</span></div>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+          <h2 class="section-title">Recharge</h2>
+          <div id="packages" class="grid" role="group" aria-label="Recharge packages">
+            <!-- injected by JS -->
+          </div>
+
+          <div class="bottom">
+            <button id="rechargeBtn" class="cta" type="button">
+              Recharge
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const state = {
+      coins: 5,
+      selectedPackageCoins: null,
+      selectedPackagePrice: null,
+      rateUsdPerCoin: 0.02
+    };
+
+    const ui = {
+      screens: document.getElementById('screens'),
+      goGetCoins: document.getElementById('goGetCoins'),
+      goBack: document.getElementById('goBack'),
+      packages: document.getElementById('packages'),
+      rechargeBtn: document.getElementById('rechargeBtn'),
+      toast: document.getElementById('toast'),
+      coinsPill: document.getElementById('coinsPill'),
+      coinsCard: document.getElementById('coinsCard'),
+      usdValue: document.getElementById('usdValue'),
+      usdBig: document.getElementById('usdBig')
+    };
+
+    const PACKAGES = [
+      { coins: 20, price: 0.39 },
+      { coins: 30, price: 0.59 },
+      { coins: 40, price: 0.69 },
+      { coins: 60, price: 1.09 },
+      { coins: 139, price: 2.39 },
+      { coins: 210, price: 3.69 },
+      { coins: 280, price: 4.89 },
+      { coins: 350, price: 6.00 }
+    ];
+
+    function fmtUsd(x){
+      return Number(x).toFixed(2);
+    }
+
+    function render(){
+      ui.coinsPill.textContent = String(state.coins);
+      ui.coinsCard.textContent = String(state.coins);
+      ui.usdValue.textContent = fmtUsd(state.coins * state.rateUsdPerCoin);
+    }
+
+    function setScreen(name){
+      const x = name === 'balance' ? '0%' : '-50%';
+      ui.screens.style.setProperty('--x', x);
+    }
+
+    let toastTimer = null;
+    function showToast(message){
+      ui.toast.textContent = message;
+      ui.toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => ui.toast.classList.remove('show'), 1700);
+    }
+
+    function countUp({ from, to, durationMs, onUpdate, onDone }){
+      const start = performance.now();
+      const d = Math.max(200, durationMs || 700);
+      const delta = to - from;
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+      function tick(now){
+        const p = Math.min(1, (now - start) / d);
+        const v = from + delta * ease(p);
+        onUpdate(v, p);
+        if (p < 1) requestAnimationFrame(tick);
+        else onDone && onDone();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function pop(el){
+      el.classList.remove('pop');
+      // force reflow to restart animation
+      void el.offsetWidth;
+      el.classList.add('pop');
+    }
+
+    function buildPackages(){
+      ui.packages.innerHTML = '';
+      for (const p of PACKAGES){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pkg';
+        btn.setAttribute('aria-pressed', 'false');
+        btn.dataset.coins = String(p.coins);
+        btn.dataset.price = String(p.price);
+
+        const coinsRow = document.createElement('div');
+        coinsRow.className = 'coins';
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.setAttribute('aria-hidden', 'true');
+        coinsRow.appendChild(dot);
+        coinsRow.appendChild(document.createTextNode(' ' + String(p.coins)));
+
+        const priceRow = document.createElement('div');
+        priceRow.className = 'price';
+        priceRow.textContent = fmtUsd(p.price) + ' USD';
+
+        btn.appendChild(coinsRow);
+        btn.appendChild(priceRow);
+
+        btn.addEventListener('click', () => {
+          selectPackage(p.coins, p.price);
+        });
+        ui.packages.appendChild(btn);
+      }
+    }
+
+    function selectPackage(coins, price){
+      state.selectedPackageCoins = coins;
+      state.selectedPackagePrice = price;
+      [...ui.packages.querySelectorAll('.pkg')].forEach(el => {
+        const on = Number(el.dataset.coins) === coins;
+        el.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    function setRechargeLoading(loading){
+      ui.rechargeBtn.disabled = !!loading;
+      ui.rechargeBtn.innerHTML = loading
+        ? `<span class="spinner" aria-hidden="true"></span> Processing…`
+        : `Recharge`;
+    }
+
+    async function recharge(){
+      if (!state.selectedPackageCoins){
+        showToast('Select a package');
+        return;
+      }
+
+      const oldCoins = state.coins;
+      const addCoins = state.selectedPackageCoins;
+      const newCoins = oldCoins + addCoins;
+
+      setRechargeLoading(true);
+      const delay = 900 + Math.round(Math.random() * 250);
+      await new Promise(r => setTimeout(r, delay));
+
+      state.coins = newCoins;
+      setRechargeLoading(false);
+
+      // Go back, then animate numbers on Balance
+      setScreen('balance');
+
+      // wait a bit so the slide finishes and feels intentional
+      setTimeout(() => {
+        pop(ui.usdBig);
+        countUp({
+          from: oldCoins,
+          to: newCoins,
+          durationMs: 760,
+          onUpdate: (v) => {
+            ui.coinsPill.textContent = String(Math.round(v));
+            ui.coinsCard.textContent = String(Math.round(v));
+            ui.usdValue.textContent = fmtUsd(v * state.rateUsdPerCoin);
+          },
+          onDone: () => render()
+        });
+      }, 260);
+
+      // keep selection for quick repeat, but visually it remains selected
+    }
+
+    ui.goGetCoins.addEventListener('click', () => setScreen('get-coins'));
+    ui.goBack.addEventListener('click', () => setScreen('balance'));
+    ui.rechargeBtn.addEventListener('click', recharge);
+
+    // initial
+    buildPackages();
+    render();
+  </script>
+</body>
+</html>
+
