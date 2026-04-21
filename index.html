@@ -153,6 +153,13 @@
       text-align: center;
     }
 
+    .coins-pill-wrap{
+      display: flex;
+      justify-content: center;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
     .est{
       display: inline-flex;
       align-items: center;
@@ -206,8 +213,8 @@
     .pill{
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
+      gap: 12px;
+      padding: 12px 18px;
       border-radius: 999px;
       background: rgba(255,255,255,.45);
       border: 1px solid rgba(255,255,255,.55);
@@ -222,12 +229,12 @@
     }
     .pill .divider{
       width: 1px;
-      height: 16px;
+      height: 18px;
       background: rgba(17,17,17,.14);
     }
     .tcoin{
-      width: 22px;
-      height: 22px;
+      width: 26px;
+      height: 26px;
       border-radius: 0;
       background-image: var(--coin-url);
       background-size: cover;
@@ -239,8 +246,8 @@
     .pill .label{
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 10px;
+      font-size: 15px;
       font-weight: 650;
       color: rgba(17,17,17,.60);
     }
@@ -253,9 +260,9 @@
     .pill .action{
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 750;
       color: rgba(17,17,17,.70);
       border: 0;
       background: transparent;
@@ -265,12 +272,12 @@
     }
     .pill .action:active{ opacity: .7; }
     .pill .action .arr{
-      width: 10px;
-      height: 10px;
+      width: 11px;
+      height: 11px;
       border-right: 2px solid rgba(17,17,17,.45);
       border-top: 2px solid rgba(17,17,17,.45);
       transform: rotate(45deg);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .section-label{
@@ -514,7 +521,7 @@
       border-radius: 12px;
       border: 1px solid rgba(0,0,0,0);
       background: var(--tile);
-      padding: 14px 12px;
+      padding: 18px 12px;
       text-align: center;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -522,6 +529,9 @@
       box-shadow: none;
       position: relative;
       overflow: hidden;
+      display: grid;
+      place-items: center;
+      min-height: 72px;
     }
     .pkg:active{ transform: scale(.985); }
     .pkg .coins{
@@ -542,12 +552,6 @@
       background-position: center;
       background-repeat: no-repeat;
       box-shadow: none;
-    }
-    .pkg .price{
-      margin-top: 6px;
-      color: rgba(17,17,17,.45);
-      font-weight: 650;
-      font-size: 13px;
     }
     .pkg[aria-pressed="true"]{
       border-color: var(--tt-pink-border);
@@ -654,7 +658,7 @@
           </div>
 
           <div class="center">
-            <div style="display:flex; justify-content:center;">
+            <div class="coins-pill-wrap">
               <div class="pill" aria-label="Coins and Get Coins">
                 <span class="label"><span class="tcoin" aria-hidden="true"></span> Coins <span id="coinsPill" class="value">5</span></span>
                 <span class="divider" aria-hidden="true"></span>
@@ -810,11 +814,6 @@
       { coins: 350, price: 6.00 }
     ];
 
-    function fmtUsd(x){
-      const s = Number(x).toFixed(2);
-      return s.replace('.', ',');
-    }
-
     function render(){
       ui.coinsPill.textContent = String(state.coins);
       ui.coinsCard.textContent = String(state.coins);
@@ -874,12 +873,7 @@
         coinsRow.appendChild(dot);
         coinsRow.appendChild(document.createTextNode(' ' + String(p.coins)));
 
-        const priceRow = document.createElement('div');
-        priceRow.className = 'price';
-        priceRow.textContent = fmtUsd(p.price) + ' USD';
-
         btn.appendChild(coinsRow);
-        btn.appendChild(priceRow);
 
         btn.addEventListener('click', () => {
           selectPackage(p.coins, p.price);
