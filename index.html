@@ -22,6 +22,7 @@
       --tt-red-2: #ff3b5f;
       --tt-pink-bg: rgba(255, 43, 85, .08);
       --tt-pink-border: rgba(255, 43, 85, .55);
+      --coin-url: url("https://i.postimg.cc/L8yhJJRG/free-tiktok-coin-with-blink-star-3d-icon-png-download-6220600.webp");
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -231,22 +232,15 @@
       background: rgba(17,17,17,.14);
     }
     .tcoin{
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       border-radius: 999px;
-      background: linear-gradient(180deg, #ffd76a, #f4b400);
-      border: 1px solid rgba(0,0,0,.10);
-      box-shadow: 0 10px 14px rgba(0,0,0,.08);
-      position: relative;
-      display: grid;
-      place-items: center;
-    }
-    .tcoin:before{
-      content: "♪";
-      font-size: 12px;
-      font-weight: 900;
-      color: rgba(255,255,255,.95);
-      transform: translateY(-.5px);
+      background-image: var(--coin-url);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 10px 14px rgba(0,0,0,.10);
+      flex: 0 0 auto;
     }
     .pill .label{
       display: inline-flex;
@@ -490,18 +484,12 @@
       width: 34px;
       height: 34px;
       border-radius: 999px;
-      background: linear-gradient(180deg, #ffd76a, #f4b400);
-      border: 1px solid rgba(0,0,0,.10);
-      box-shadow: 0 12px 18px rgba(0,0,0,.08);
-      display: grid;
-      place-items: center;
+      background-image: var(--coin-url);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 12px 18px rgba(0,0,0,.10);
       flex: 0 0 auto;
-    }
-    .coins-balance .stack:before{
-      content: "♪";
-      font-weight: 900;
-      color: rgba(255,255,255,.95);
-      transform: translateY(-1px);
     }
     .coins-balance .num{
       display: grid;
@@ -552,22 +540,14 @@
       justify-content: center;
     }
     .pkg .coins .dot{
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
-      background: linear-gradient(180deg, #ffd76a, #f4b400);
-      border: 1px solid rgba(0,0,0,.10);
-      position: relative;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 8px 12px rgba(0,0,0,.08);
-    }
-    .pkg .coins .dot:before{
-      content: "♪";
-      font-size: 10px;
-      font-weight: 900;
-      color: rgba(255,255,255,.95);
-      transform: translateY(-.5px);
+      background-image: var(--coin-url);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 8px 12px rgba(0,0,0,.10);
     }
     .pkg .price{
       margin-top: 6px;
